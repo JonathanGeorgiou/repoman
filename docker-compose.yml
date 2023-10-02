@@ -1,0 +1,24 @@
+version: "3"
+services:
+  # yum-repo:
+    # build:
+      # context: .
+      # dockerfile: yum.dockerfile
+    # ports:
+      # - "80:80"
+      # - "8080:8080"
+      # - "8443:8443"
+    # volumes:
+      # - "yum_repo_volume:/var/www/html/yum_repo"
+
+  apt-repo:
+    build:
+      context: .
+      dockerfile: apt.dockerfile
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "8443:8443"
+
+volumes:
+  yum_repo_volume:
