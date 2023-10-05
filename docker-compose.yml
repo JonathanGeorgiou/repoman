@@ -1,24 +1,37 @@
 version: "3"
 services:
-  # yum-repo:
-    # build:
-      # context: .
-      # dockerfile: yum.dockerfile
-    # ports:
-      # - "80:80"
-      # - "8080:8080"
-      # - "8443:8443"
-    # volumes:
-      # - "yum_repo_volume:/var/www/html/yum_repo"
+  dnf-repo:
+    build:
+      context: .
+      dockerfile: dnf.dockerfile
+    volumes:
+      - "dnf-repo:/tmp/dnf"
+    stdin_open: true
+    tty: true
 
   apt-repo:
     build:
       context: .
       dockerfile: apt.dockerfile
+    volumes:
+      - "apt-repo:/tmp/.aptly"
+    stdin_open: true
+    tty: true
+
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
     ports:
       - "80:80"
-      - "8080:8080"
-      - "8443:8443"
+    volumes:
+      - "apt-repo:/usr/share/nginx/html/apt"
+      - "dnf-repo:/usr/share/nginx/html/dnf"
+    depends_on:
+      - dnf-repo
+      - apt-repo
 
 volumes:
-  yum_repo_volume:
+  dnf-repo:
+  apt-repo:
+

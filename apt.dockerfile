@@ -1,16 +1,13 @@
-FROM ubuntu/nginx
+FROM ubuntu
 
-VOLUME apt_repo_volume 
-
+WORKDIR /tmp
+RUN mkdir -p /tmp/.aptly/public
 RUN apt update -y &&  \
     apt install aptly -y
 
-COPY ./config/.aptly.conf /root/
+COPY ./config/aptly.conf /etc/
+COPY ./scripts/aptly.sh .
 
-RUN aptly mirror create ubuntu-jammy http://archive.ubuntu.com/ubuntu jammy main
-RUN aptly mirror update ubuntu-jammy
+RUN chmod +x aptly.sh
 
-RUN aptly snapshot create localrepo from mirror ubuntu-jammy && \
-    aptly publish snapshot -distribution jammy -architectures="amd64" localrepo
-
-CMD aptly serve
+CMD ./aptly.sh
